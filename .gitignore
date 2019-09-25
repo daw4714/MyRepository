@@ -1,0 +1,47 @@
+# Ignore derived files
+*.o
+bin/**
+
+# Ignore archives and third party docs
+*.zip
+
+# Ignore PDF files
+#.pdf*
+# PDF/**
+
+# Ignore log files
+*.log
+
+# ignore derived files from java and ant
+Bak/**
+Scheduler/output/**
+utest.report/**
+cert.report/**
+classes/**
+dist/**
+
+# Eclipse config
+#.pydevproject
+#.project
+#.classpath
+
+# Python bytecode:
+*.pyc
+*.pyo
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.swp
+.*.sw?
+*~
+
+# SQLite3 database files:
+*.db
+
+# Files derived by LaTeX
+*.aux
+*.log
+*.out
+
