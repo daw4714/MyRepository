@@ -1,4 +1,3 @@
-lars@vmmint13-10:~/GdPI/CodeExamples/Assembler/UseNASM/Adder
 $ make clean; make
 
 $ gdbtui -q bin/adder 
@@ -16,7 +15,7 @@ $ gdbtui -q bin/adder
 -----------
 
 
-Nun mittels 'ni' (next instruction) oder 'si' (step iunstruction)
+Nun mittels 'ni' (next instruction) oder 'si' (step instruction)
 den Assemblercode schrittweise ausführen.
 
 Bei Interesse zwischendurch die Stack-Frames ausgeben 'stack_all32'

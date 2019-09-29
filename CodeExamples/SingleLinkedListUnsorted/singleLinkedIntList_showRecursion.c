@@ -50,7 +50,7 @@ node_t* list_insert_end_dbg(node_t* node, int data, int offset) {
 
     if (debug){
       nspace(offset);
-      printf("Link assignement: node -> next = %p\n", node->next);
+      printf("Link assignment: node -> next = %p\n", node->next);
       nspace(offset);
       printf("Leave list_insert_end_dbg: returning address %p\n", node);
     }

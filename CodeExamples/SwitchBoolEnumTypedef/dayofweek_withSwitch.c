@@ -25,7 +25,7 @@ int readInteger(char* prompt, int* n) {
 
         if(scanf("%d", n) != 1) {
             zaehler--;
-            printf("Sie muessen hier eine Zahl eingeben!!!\n");
+            printf("Sie müssen hier eine Zahl eingeben!!!\n");
         } else {
             erfolg = 1;
         }
@@ -60,18 +60,20 @@ int main (void) {
     }
 
     switch(wd) {
-        case MO: case DI: case MI:
-        case DO:
-        case FR:
-            printf("\nSie haben einen Werktag gewaehlt\n");
+        /* Alte C-Syntax 
+         * case MO: case DI: case MI: case DO: 
+         * case FR:
+         */
+        case MO ... FR:
+            printf("\nSie haben einen Werktag gewählt\n");
             break;
         case SA:
-            printf("\nSie haben den Samstag gewaehlt\n\n");
+            printf("\nSie haben den Samstag gewählt\n\n");
             printf("Das ist ein Werktag, an dem aber in fast allen"
-                    " Bundeslaendern schulfrei ist\n");
+                    " Bundesländern schulfrei ist\n");
             break;
         case SO:
-            printf("\nSie haben den Sonntag gewaehlt\n\n");
+            printf("\nSie haben den Sonntag gewählt\n\n");
             printf("An diesem Tag habe die meisten Arbeitnehmer frei\n");
             break;
         default:

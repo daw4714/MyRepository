@@ -1,11 +1,14 @@
 #-----------------------------------------
-# Teminal 77x27: Alt-F8
+# Teminal 77x27: (mit Alt-F8 in Resize-Modus gehen; Return wenn fertig)
 
 $ make clean; make
+
+Erklären:
+
 	-> -mpush-args
 	-> -mpreferred-stack-boundary=4
 
-$ gdbtui bin/factorial
+$ gdbtui -q bin/factorial
 
 #-----------------------------------------
 

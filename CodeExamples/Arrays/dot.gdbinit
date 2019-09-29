@@ -6,7 +6,7 @@ break main
 winheight src 14
 
 # Auto-Display
-# Angabe des Scopes main:: notewendig
+# Angabe des Scopes main:: notwendig
 # Sonst Fehlermeldung wenn nicht in Scope von main()
 display main::sum
 display main::i

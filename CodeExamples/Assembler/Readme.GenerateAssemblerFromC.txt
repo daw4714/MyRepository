@@ -11,5 +11,5 @@ Danach einfach die Assemblerdatei hello.s betrachten.
 
 #-----------------------
 # Hinweis:
-# Die Assemblerdateine hello_att.s und hello_intel.s sind
+# Die Assembler-Dateien hello_att.s und hello_intel.s sind
 # manuell kodierte Assemblerdateien.

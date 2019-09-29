@@ -28,7 +28,8 @@ int main() {
     }
     while(getchar() != '\n'){ /*clean the buffer*/ }
 
-    printf("Startwert=%d, Endwert=%d, Schrittweite=%d\n",startwert,endwert,schrittweite);
+    printf("Startwert=%d, Endwert=%d, Schrittweite=%d\n",
+            startwert,endwert,schrittweite);
     printf("Grad Fahrenheit\tGrad Celsius\n");
     for (fhwert = startwert; fhwert <= endwert;  
             fhwert = fhwert + schrittweite) {

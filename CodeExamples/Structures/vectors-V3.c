@@ -59,7 +59,7 @@ int main() {
   add_vec(&v1,&v3,&v4); // we use result of negation in v3
 
   printf("Vector subtraction:\n"
-      "(%5.2f, %5.2f) + "
+      "(%5.2f, %5.2f) - "
       "(%5.2f, %5.2f) = "
       "(%5.2f, %5.2f)\n",
       v1.x,v1.y,

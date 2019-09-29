@@ -55,7 +55,7 @@ int main() {
 
   v3 = add_vec(v1,neg_vec(v2));
   printf("Vector subtraction:\n"
-      "(%5.2f, %5.2f) + "
+      "(%5.2f, %5.2f) - "
       "(%5.2f, %5.2f) = "
       "(%5.2f, %5.2f)\n",
       v1.x,v1.y,

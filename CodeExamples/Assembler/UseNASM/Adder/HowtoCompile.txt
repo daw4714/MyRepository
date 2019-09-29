@@ -1,7 +1,8 @@
 #-------------------------
 # Install package nasm as user root
 
-sudo aptitude install nasm
+# Already done for WS18 VM
+# sudo aptitude install nasm
 
 #----------------
 # Compile and link

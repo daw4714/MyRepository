@@ -37,6 +37,12 @@ Ctrl-x a (TUI-Mode verlassen)
 
 Ctrl-l löscht die Anzeige (clear screen!)
 
+#Hints:
+#set disassembly-flavor intel
+#set print max-symbolic-offset 1
+
+# Show disassembled code in AT&T flavour
+
 (gdb) disass /m main
 Dump of assembler code for function main:
 18	int main() {

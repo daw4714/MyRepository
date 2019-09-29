@@ -4,9 +4,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define OK 0
-#define ERROR 1
-
 // Rekursive Fassung
 // Direkt nach der Definition -> leicht verstaendlich
 int fib(int n){
@@ -24,12 +21,12 @@ int main (int argc, char * argv[]) {
 	if (argc != 2) {
 		printf("Bitte eine Zahl eingeben:\n");
 		printf("Beispiel:  %s 4 \n", argv[0]);
-		return ERROR;
+		return EXIT_FAILURE;
 	}
 
 	int z = atoi(argv[1]);
 
 	printf("fibonacci(%d) = %d\n", z, fib(z) );
 
-	return OK;
+	return EXIT_SUCCESS;
 }

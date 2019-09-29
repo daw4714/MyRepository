@@ -4,7 +4,7 @@ $ gdbtui -q bin/euklid
 
 (gdb) break main
 
-#---- Anzeige Assembler in AT&T-FOrmat
+#---- Anzeige Assembler in AT&T-Format
 
 (gdb) layout asm
 
