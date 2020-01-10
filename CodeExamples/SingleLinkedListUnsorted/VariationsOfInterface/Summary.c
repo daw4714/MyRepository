@@ -1,10 +1,12 @@
 // ------------------------------------------------------
-// Collected functions: does not compile
+// A collection of functions: does not compile
 //
-// Shows the difference of interfaces:
+// Shows differences of interfaces:
 //
-//         functional/procedural
-//         recursvie/iterative
+//         functional / procedural
+//
+//           recursve / iterative
+//
 // ------------------------------------------------------
 
 // Interface: recursive + functional
@@ -13,12 +15,10 @@
 // Call like this: anchor = list_remove_tail(anchor);
 //
 // Remove tail node of list
-node_t* list_remove_tail(node_t* node){
 
-  node_t* result;
-  if (node == NULL) {
-    result = NULL;
-  } else {
+node_t* list_remove_tail(node_t* node){
+  node_t* result = node;
+  if(node != NULL) {
     if (node->next == NULL) {
       // Remove last node
       free(node);
@@ -26,10 +26,8 @@ node_t* list_remove_tail(node_t* node){
     } else {
       // Recursive call
       node->next = list_remove_tail(node->next);
-      result = node;
     }
   }
-
   return result;
 }
 
@@ -42,12 +40,11 @@ node_t* list_remove_tail(node_t* node){
 // Call like this: list_remove_tail(&anchor);
 //
 // Remove tail node of list
+
 void list_remove_tail(node_t* *pnode){
   node_t* node = *pnode;
-  node_t* result;
-  if (node == NULL) {
-    result = NULL;
-  } else {
+  node_t* result = node;
+  if (node != NULL) {
     if (node->next == NULL) {
       // Remove last node
       free(node);
@@ -55,22 +52,20 @@ void list_remove_tail(node_t* *pnode){
     } else {
       // Recursive call
       list_remove_tail(&node->next);
-      result = node;
     }
   }
   *pnode = result;
-  return;
 }
 
 
 // ------------------------------------------------------
-
 // Interface: iterative + functional
 // Single return statement
 //
 // Call like this: anchor = list_remove_tail(anchor);
 //
 // Remove tail node of list
+
 node_t* list_remove_tail(node_t* node){
 
   node_t *result = node; // init result
@@ -92,8 +87,8 @@ node_t* list_remove_tail(node_t* node){
       // node was the only node in the list
       result = NULL;
     } else {
-      // List had at least two elements
-      // Terminate list
+      // List had at least two elements.
+      // Terminate list.
       last->next = NULL;
     }
   }
@@ -103,13 +98,13 @@ node_t* list_remove_tail(node_t* node){
 
 
 // ------------------------------------------------------
-
 // Interface: iterative + procedural
 // Single return statement
 //
 // Call like this: list_remove_tail(&anchor);
 //
 // Remove tail node of list
+
 void list_remove_tail(node_t* *pnode){
   node_t *node = *pnode;
   node_t *result = node; // init result
@@ -128,15 +123,15 @@ void list_remove_tail(node_t* *pnode){
     free(node);
 
     if (last == NULL) {
-      // node was the only node in the list
+      // node was the only node in the list.
+      // Update result.
       result = NULL;
     } else {
-      // List had at least two elements
-      // Terminate list
+      // The list had at least two elements.
+      // Terminate the list
       last->next = NULL;
     }
   }
   *pnode = result;
-  return;
 }
 

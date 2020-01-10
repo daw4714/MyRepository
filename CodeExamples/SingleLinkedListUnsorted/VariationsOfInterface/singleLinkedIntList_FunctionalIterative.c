@@ -29,7 +29,6 @@ void dump_list(node_t *node);
 //
 // Remove tail node of list
 node_t* list_remove_tail(node_t* node){
-
   node_t *result = node; // init result
   if (node != NULL) {
     node_t* last = NULL;   // Last node before tail node

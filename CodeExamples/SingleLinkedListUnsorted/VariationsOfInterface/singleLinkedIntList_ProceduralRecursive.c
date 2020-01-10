@@ -30,10 +30,8 @@ void dump_list(node_t *node);
 // Remove tail node of list
 void list_remove_tail(node_t* *pnode){
   node_t* node = *pnode;
-  node_t* result;
-  if (node == NULL) {
-    result = NULL;
-  } else {
+  node_t* result = node;
+  if (node != NULL) {
     if (node->next == NULL) {
       // Remove last node
       free(node);
@@ -41,11 +39,9 @@ void list_remove_tail(node_t* *pnode){
     } else {
       // Recursive call
       list_remove_tail(&node->next);
-      result = node;
     }
   }
   *pnode = result;
-  return;
 }
 
 // -----------------------------------------------------------------------

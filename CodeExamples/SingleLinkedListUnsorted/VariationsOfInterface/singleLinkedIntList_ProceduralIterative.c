@@ -55,7 +55,6 @@ void list_remove_tail(node_t* *pnode){
     }
   }
   *pnode = result;
-  return;
 }
 
 // -----------------------------------------------------------------------
