@@ -8,10 +8,10 @@
 #define SUCCESS 0
 #define FAILURE 1
 
-// Dupliziere String, allokiere auf Heap mittels malloc
+// Dupliziere String, alloziere auf Heap mittels malloc
 char *my_strdup(const char *src){
     char* clone;
-    // Achtung: 1 Byte mehr fuer Terminierung allokieren
+    // Achtung: 1 Byte mehr fuer Terminierung allozieren
     clone = malloc( (strlen(src)+1) * sizeof(char));
     if (clone == NULL) {
         return NULL;
