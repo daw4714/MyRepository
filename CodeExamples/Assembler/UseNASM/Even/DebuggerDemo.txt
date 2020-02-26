@@ -1,18 +1,42 @@
-lars@vmmint13-10:~/GdPI/CodeExamples/Assembler/UseNASM/Even
+#
+# For doc about debugging assembler files, see e.g.
+# https://www.csee.umbc.edu/portal/help/nasm/nasm.shtml
+#
+
 $ make clean; make
 
 $ gdbtui -q bin/even
 
 (gdb)
 break main
-set disassembly-flavor att
+set disassembly-flavor intel
 run
 
 winheight src 15
 
 source gdb.flags
-source gdb.stackdump 
+source gdb.stackdump
+
+# Mittels 'ni' (next instruction)  schrittweise ausführen, bis das nächste
+# Kommando wie folgt lautet:
+# push      prompt_n1
+
+ni
+...
+
+   │42          ; --------------------------------------------------------  │
+   │43          ; read first number n1                                      │
+   │44          ; push argument for call of printf                          │
+  >│45          push      prompt_n1                                         │
+
+
+# Initialen Framepointer setzen
+
 set_bfp 
+
+# Das aktuelle Stack-Frame ausgeben:
+# Hinweis: auf Deiner Maschine siehst Du vermutlich eine andere
+# Adresse als '0xbffff878'
 
 stack_all32 
 
