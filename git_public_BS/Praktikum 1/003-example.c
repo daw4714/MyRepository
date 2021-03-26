@@ -1,41 +1,32 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <string.h>
+
+struct student
+{
+  char name[100];
+  int laenge;
+};
 
 /* Thread-Funktion */
 void *example_fct(void *args){
-  int i;
-  struct timespec sleep = { 0, 1000 };
-  struct test1 { int index1;
-                int index2;
-  
-  };
-  struct test1 * test;
-
-  for(i = 0; i < 100; i++) {
-    test -> index1 = i;
-    test -> index2 = i+2;
-    printf("index1 = %d\n", test -> index1);
-    /* Schleife, die einen "zufälligen" Buchstaben ausgibt.
-       Dieser wird anhand der Thread ID bestimmt. */
-    putchar('a' + pthread_self() % 26);
-    /* Warte ein wenig; 1 microsecunde */
-    nanosleep(&sleep, NULL);
-  }
-  return NULL;
+ 
+  struct student *stud = (struct student *)args;
+  stud->laenge = strlen((*stud).name);
+  return NULL;  
 }
 
-int main(){
+ int  main(){
   /* Lege zwei Thread-handle an */
-  pthread_t threadA, threadB;
-
+  pthread_t threadA;
+  struct student daniel = {"Daniel", 0};
   /* Starte zwei Thread mit der auszuführenden Funktion example_fct.
      Konfigurations- und Übergabe-Parameter werden nicht gesetzt, daher NULL. */
-  pthread_create(&threadA, NULL, &example_fct, NULL);
-  pthread_create(&threadB, NULL, &example_fct, NULL);
+  pthread_create(&threadA, NULL, &example_fct, &daniel);
+  
 
   /* Warte auf Beendigung der beiden Threads */
   pthread_join(threadA, NULL);
-  pthread_join(threadB, NULL);
-
+  printf("Name: %s\n Laenge: %d\n", daniel.name, daniel.laenge);
   return 0;
 }
