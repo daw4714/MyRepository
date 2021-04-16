@@ -23,9 +23,9 @@ bool  primzahl1(int  zahl){
 void *calc_prime(void *args){
  struct parameter *param = (struct parameter *) args;
 
-  for(size_t i = 2 + param->offset; i < MAX_TO_TEST; i+= param->step){
+  for(size_t i = 2 + param->offset; i < MAX_TO_TEST; i+= param->step){  //bis MAx mit Schrittweite step
 
-    for(size_t j = 0; j < param->group; ++j){
+    for(size_t j = 0; j < param->group; ++j){  //Berechnung jeden Elements aus der Gruppe
       primzahl1(i+j);
     }
 
@@ -48,9 +48,9 @@ struct timespec start, stop, delta;
  double d_delta;
 for( counter = 0; counter < NUM_THREAD; counter ++){
 
-  param[counter].group = 2;
-  param[counter].offset = counter * param[counter].group;
-  param[counter].step = 4 * param[counter].group;
+  param[counter].group = 2; //Jeder Thread verarbeitet einen gerade und eine ungerade Zahl als Gruppe
+  param[counter].offset = counter * param[counter].group;  //Startpunkt für Thread
+  param[counter].step = NUM_THREAD * param[counter].group;  //Schrittweite für Thread
   pthread_create(&t[counter], NULL, &calc_prime, &param[counter]);
 
 }
