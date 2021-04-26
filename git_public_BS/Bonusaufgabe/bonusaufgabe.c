@@ -2,12 +2,13 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdatomic.h>
+#include <stdbool.h>
 
 //Max Threadanzahl
-#define MAX_ANZ_THREADS (20)
+#define MAX_ANZ_THREADS (2)
 
 //Max Anzahl an Iterationen
-#define MAX_CNT (100*1000*1000)
+#define MAX_CNT (100);//*1000*1000)
 
 //Shared Ressource
 volatile int a = 0; 
@@ -17,19 +18,19 @@ volatile int c = 0;
 //locks
 pthread_mutex_t lock;
 sem_t lock_sem;
-volatile bool locked = FALSE;
-
+volatile bool locked = false;
+/*
 //Test-And-Set-Lock Method
 atomic boolean Test_And_Set_Lock( boolean *is_locked){
-    boolean swaped = *is_locked;
-    *is_locked = TRUE;
+    bool swaped = *is_locked;
+    *is_locked = true;
     return swaped;
 }
-
+*/
 
  // READ-MODIFY-WRITE-Sequences
 int *read_modify_write_Mutex(){
-  for( size_t t = 0 ; t < MAX_CNT; t ++){
+  for( size_t t = 0 ; t < 10; t ++){
   pthread_mutex_lock(&lock); 
   a = a + 10;
   a = a-1;
@@ -41,7 +42,7 @@ int *read_modify_write_Mutex(){
 }
 // READ-MODIFY-WRITE-Sequence
 int *read_modify_write_Semaphore(){
-  for( size_t t = 0 ; t < MAX_CNT; t ++){
+  for( size_t s = 0 ; s < 10; s ++){
   sem_wait(&lock_sem); 
   b = b + 10;
   b = b-1;
@@ -52,22 +53,22 @@ int *read_modify_write_Semaphore(){
   return b;
 }
 
-// READ-Modify-Write-Sequence
+/*// READ-Modify-Write-Sequence
 
 int *read_modify_write_Test_And_Set_Lock(){
  for( size_t t = 0 ; t < MAX_CNT; t ++){
   
-    while(Test_And_Set_Lock(&locked) == TRUE) 
+    while(Test_And_Set_Lock(&locked) == true) 
     ;
         c = c + 10;
         c = c-1;
         printf("%d\n ", c);
 
   // Free critical Area
-    locked = FALSE;  
+    locked = false;  
     }
   return c;
-}
+}*/
 
 
 int main (void * args){
@@ -99,7 +100,7 @@ pthread_t t[MAX_ANZ_THREADS];
   delta.tv_sec = stop.tv_sec - start.tv_sec;
  delta.tv_nsec = stop.tv_nsec - start.tv_nsec;
  if(start.tv_nsec > stop.tv_nsec){
-   delta.tv_sec =-1;
+   delta.tv_sec -=1;
    delta.tv_nsec += 1000000000;
  }
   d_delta = (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
@@ -108,10 +109,10 @@ pthread_t t[MAX_ANZ_THREADS];
 //###########################################################################################################
 struct timespec start1, stop1, delta1;
  timespec_get(&start1, TIME_UTC);
- double d_delta1;
-size_t counter1;
+ double d_delta1;   
+ size_t counter1;
 //Array of Threads with length MAX_ANZ_THREADS
-pthread_t r[MAX_ANZ_THREADS]; 
+    pthread_t r[MAX_ANZ_THREADS]; 
 
  //Überprüfen ob Mutex erfolgreich, sonst Fehlercode
   if (sem_init(&lock_sem,NULL, 1)!=0){ 
@@ -128,25 +129,25 @@ pthread_t r[MAX_ANZ_THREADS];
    sem_destroy(&lock_sem);
    printf("%d\n ", b);
 
-// Analysing time
-timespec_get(&stop1, TIME_UTC);
-  delta1.tv_sec = stop1.tv_sec - start1.tv_sec;
- delta1.tv_nsec = stop1.tv_nsec - start1.tv_nsec;
- if(start1.tv_nsec > stop1.tv_nsec){
-   delta1.tv_sec =-1;
-   delta1.tv_nsec += 1000000000;
- }
-  d_delta1 = (double) delta1.tv_sec + (double) delta1.tv_nsec/ 1000000000.0;
-  printf("Semaphore-Laufzeit: %f\n", d_delta1);
+    // Analysing time
+    timespec_get(&stop1, TIME_UTC);
+    delta1.tv_sec = stop1.tv_sec - start1.tv_sec;
+    delta1.tv_nsec = stop1.tv_nsec - start1.tv_nsec;
+    if(start1.tv_nsec > stop1.tv_nsec){
+        delta1.tv_sec -=1;
+        delta1.tv_nsec += 1000000000;
+    }
+    d_delta1 = (double) delta1.tv_sec + (double) delta1.tv_nsec/ 1000000000.0;
+    printf("Semaphore-Laufzeit: %f\n", d_delta1);
 
-//##################################################################################################################
+/*//##################################################################################################################
 struct timespec start2, stop2, delta2;
  timespec_get(&start2, TIME_UTC);
  double d_delta2;
 
-size_t counter2;
+    size_t counter2;
 //Array of Threads with length MAX_ANZ_THREADS
-pthread_t n[MAX_ANZ_THREADS]; 
+    pthread_t n[MAX_ANZ_THREADS]; 
 
  
    //Running Thread with Mutex
@@ -160,19 +161,19 @@ pthread_t n[MAX_ANZ_THREADS];
    
    printf("%d\n ", c);
 
-// Analysing time
-timespec_get(&stop2, TIME_UTC);
-  delta2.tv_sec = stop2.tv_sec - start2.tv_sec;
- delta2.tv_nsec = stop2.tv_nsec - start2.tv_nsec;
- if(start2.tv_nsec > stop2.tv_nsec){
-   delta2.tv_sec =-1;
-   delta2.tv_nsec += 1000000000;
- }
-  d_delta2 = (double) delta2.tv_sec + (double) delta2.tv_nsec/ 1000000000.0;
-  printf("Semaphore-Laufzeit: %f\n", d_delta2);
+    // Analysing time
+    timespec_get(&stop2, TIME_UTC);
+    delta2.tv_sec = stop2.tv_sec - start2.tv_sec;
+    delta2.tv_nsec = stop2.tv_nsec - start2.tv_nsec;
+    if(start2.tv_nsec > stop2.tv_nsec){
+         delta2.tv_sec -=1;
+         delta2.tv_nsec += 1000000000;
+     }
+    d_delta2 = (double) delta2.tv_sec + (double) delta2.tv_nsec/ 1000000000.0;
+    printf("Semaphore-Laufzeit: %f\n", d_delta2);
 
-
-return NULL;
+*/
+    return NULL;
 }
     
   
