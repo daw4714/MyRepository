@@ -5,10 +5,10 @@
 #include <stdbool.h>
 
 //Max Threadanzahl
-#define MAX_ANZ_THREADS (250)
+#define MAX_ANZ_THREADS (70)
 
 //Max Anzahl an Iterationen
-#define MAX_CNT (100*1000*1000);
+#define MAX_CNT (100*1000*1000)
 
 //Shared Ressource
 volatile int a = 0; 
@@ -20,13 +20,15 @@ pthread_mutex_t lock;
 sem_t lock_sem;
 volatile int is_locked = false;
 
-
+volatile size_t t = 0;
+volatile size_t s = 0;
+volatile size_t v = 0;  
 
 
 
  // READ-MODIFY-WRITE-Sequences
 void *read_modify_write_Mutex(){
-  for( size_t t = 0 ; t < 10; t ++){
+  for(t ; t < MAX_CNT; t ++){
     pthread_mutex_lock(&lock); 
         a = a + 10;
         a = a-1;
@@ -38,7 +40,7 @@ void *read_modify_write_Mutex(){
 }
 // READ-MODIFY-WRITE-Sequence
 void *read_modify_write_Semaphore(){
-  for( size_t s = 0 ; s < 10; s ++){
+  for( s ; s < MAX_CNT; s ++){
      sem_wait(&lock_sem); 
         b = b + 10;
         b = b-1;
@@ -52,7 +54,7 @@ void *read_modify_write_Semaphore(){
 // READ-Modify-Write-Sequence
 
 void *read_modify_write_Test_And_Set_Lock(){
- for( size_t t = 0 ; t < 10; t ++){
+ for( v ; v < MAX_CNT; v ++){
   
     while(__sync_lock_test_and_set(&is_locked,1)) 
     ;
@@ -70,10 +72,38 @@ void *read_modify_write_Test_And_Set_Lock(){
 int main (){
 size_t counter;
 
- printf("\nLaufzeiten bei %d Threads: \n", MAX_ANZ_THREADS);
+ printf("\nLaufzeiten bei %d Threads in s: \n", MAX_ANZ_THREADS);
+
+
+struct timespec start0, stop0, delta0;
+timespec_get(&start0, TIME_UTC);
+ double d_delta0;
+
+
+
+for( size_t t = 0 ; t < MAX_CNT; t ++){
+        c = c + 10;
+        c = c-1;
+}
+// Analysing time
+ timespec_get(&stop0, TIME_UTC);
+  delta0.tv_sec = stop0.tv_sec - start0.tv_sec;
+ delta0.tv_nsec = stop0.tv_nsec - start0.tv_nsec;
+ if(start0.tv_nsec > stop0.tv_nsec){
+    delta0.tv_sec -=1;
+    delta0.tv_nsec += 1000000000;
+   }
+  d_delta0 = (double) delta0.tv_sec + (double) delta0.tv_nsec/ 1000000000.0;
+  printf("sequentielle Ausführung-Laufzeit: %f\n", d_delta0);
+
+//###########################################################################################################
+ 
+
+
 struct timespec start, stop, delta;
- timespec_get(&start, TIME_UTC);
+timespec_get(&start, TIME_UTC);
  double d_delta;
+
 
 //Array of Threads with length MAX_ANZ_THREADS
 pthread_t t[MAX_ANZ_THREADS]; 
@@ -113,7 +143,7 @@ struct timespec start1, stop1, delta1;
     pthread_t r[MAX_ANZ_THREADS]; 
 
  //Überprüfen ob Mutex erfolgreich, sonst Fehlercode
-  if (sem_init(&lock_sem,0, 1)!=0){ 
+  if (sem_init(&lock_sem,0, 1)!=0){    //Zweite Variable 0 > nur innerhalb des Prozesses verwendbar
         printf("\n Semaphore Initialization Failed \n");
       }
    //Running Thread with Mutex
@@ -170,35 +200,8 @@ struct timespec start2, stop2, delta2;
     d_delta2 = (double) delta2.tv_sec + (double) delta2.tv_nsec/ 1000000000.0;
     printf("Atomic_Test_And_Set_Lock-Laufzeit: %f\n", d_delta2);
     
-    // get Max
-    double max;
-    double min;
-    if(d_delta>d_delta2){
-        if(d_delta>d_delta2){
-            max = d_delta;
-            if(d_delta1 < d_delta2){
-               min = d_delta1;
-            }else min = d_delta2;
-        }
-    }
-    if(d_delta1>d_delta){
-        if(d_delta1>d_delta2){
-            max = d_delta1;
-            if(d_delta < d_delta2){
-               min = d_delta;
-            }else min = d_delta2;
-        }
-    }
-    if(d_delta2>d_delta){
-        if(d_delta2>d_delta1){
-            max = d_delta2;
-             if(d_delta < d_delta1){
-               min = d_delta;
-            }else min = d_delta1;
-        }
-    }
-    printf("Overhead %f \n", max - min);
-
+   
+   
 
     return 0;
 }
