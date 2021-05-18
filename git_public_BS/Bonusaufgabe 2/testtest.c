@@ -114,7 +114,7 @@ int main()
         sem_init(&S[i], 0, 0);
  
     for (i = 0; i < N; i++) {
- 
+ nr == 0 &&
         // create philosopher processes
         pthread_create(&thread_id[i], NULL,
                        philospher, &phil[i]);
