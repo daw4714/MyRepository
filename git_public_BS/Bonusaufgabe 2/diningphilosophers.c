@@ -20,7 +20,7 @@ bool requested[4];
 //Wartezeit
 double d_delta[8];
 //Löffelzähler
-size_t zähler [4] = {0, 0, 0, 0};
+size_t zaehler [4] = {0, 0, 0, 0};
 // für Zufallszahlberechnung  
 time_t t;
 size_t z = 1;
@@ -122,10 +122,10 @@ void *task (void* args) {
     request(*nr);
     sleep(TIME_TO_EAT); 
     finish(*nr);
-    zähler ++;
+    zaehler[*nr] += 1;
     double w = d_delta[*nr] + d_delta[*nr +4];
     printf("Wartezeit von Nr %d is %f \n", *nr, w);
-    printf("Nr %d hat schon %d -mal beide Löffel erhalten", *nr, zähler); 
+    printf("Nr %d hat schon %d -mal beide Löffel erhalten \n", *nr, zaehler[*nr]); 
  
 
  
