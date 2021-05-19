@@ -8,7 +8,7 @@
 
 //Anzahl Philosopher
 #define ANZ_PHILOSOPHER (4)
-#define TIME_TO_EAT 4
+#define TIME_TO_EAT 10
 
 
 pthread_mutex_t lock, safe[4];
@@ -21,7 +21,7 @@ void eat (int nr){
     pthread_mutex_lock(&safe[nr]);
     requested[nr] = true; 
     printf("Nr %d is eating\n", nr);    
-    sleep(TIME_TO_EAT); 
+    
     //requested[nr] =false;   //Keine Deadlockgefahr, da Ressourcen nach endlicher Zeit freigegeben werden und Mutex kann nur von einem Thread betreten werden
     //printf("Nr %d finished eating\n", nr);
     pthread_mutex_unlock(&safe[nr]);
@@ -49,16 +49,16 @@ void think(){
 }
 
 void request(int nr) {
-    bool can_eat[4];
+    
     pthread_mutex_lock(&lock); //Only one at a time can check and manipulate states
     
      printf("Nr %d requested Spoon \n", nr);    // Check if Neighbours are eating, if not eat 
      
-    if( nr == 0 && requested[1] != true && requested[3] != true){ can_eat[nr] = true;}
-    else if( nr == 1 && requested[2] != true && requested[0] != true){ can_eat[nr] = true;}
-    else if( nr == 2 && requested[3] != true && requested[1] != true){ can_eat[nr] = true;}
-    else if( nr == 3 && requested[0] != true && requested[2] != true){ can_eat[nr] = true;}
-    else { printf(" requested Ressources in use");}
+    if( nr == 0 && requested[1] != true && requested[3] != true){ eat(nr);}
+    else if( nr == 1 && requested[2] != true && requested[0] != true){ eat(nr);}
+    else if( nr == 2 && requested[3] != true && requested[1] != true){ eat(nr);}
+    else if( nr == 3 && requested[0] != true && requested[2] != true){ eat(nr);}
+    else { printf(" requested Ressources in use\n");}
     if( (requested[0] && requested[2]) || (requested[1] && requested[3]) ) { printf("opposide Philosophers are eating at same time\n");}
     
       
@@ -67,10 +67,7 @@ void request(int nr) {
      pthread_mutex_unlock(&lock);
      
 
-        if(can_eat[nr] == true){
-             eat(nr);
-             can_eat[nr] = false;
-        }
+       
 
     
 
@@ -87,6 +84,7 @@ void *task (void* args) {
     printf("Nr %d finished thinking\n", *nr);
 
     request(*nr);
+    sleep(TIME_TO_EAT); 
     finish(*nr);
  
 
