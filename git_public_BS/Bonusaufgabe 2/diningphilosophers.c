@@ -18,7 +18,7 @@ int neighbours [4] = { 0, 1, 2 , 3};
 // Zustand true wenn Philosoph isst, false wenn er keinen Löffel benötigt
 bool requested[4];
 //Wartezeit
-double d_delta[8];
+double d_delta[7];
 double w [4];
 //Löffelzähler
 size_t zaehler [4] = {0, 0, 0, 0};
@@ -29,6 +29,8 @@ size_t z = 1;
 //essen
 //Keine Deadlockgefahr, da Ressourcen nach endlicher Zeit freigegeben werden und Mutex kann nur von einem Thread betreten werden
 void eat (int nr){
+
+    
     //WarteZeitberechnung
     struct timespec start, stop, delta;
     
@@ -41,6 +43,8 @@ void eat (int nr){
     delta.tv_nsec = stop.tv_nsec - start.tv_nsec;
 
     requested[nr] = true; 
+   
+     
     printf("Nr %d is eating\n", nr);    
     
       
@@ -53,6 +57,7 @@ void eat (int nr){
 void finish (int nr) {
     
     //Mutex (für den Zustand des jeweiligen Philosophen) sperren
+       
     pthread_mutex_lock(&safe[nr]);
     
     requested[nr] =false;   
@@ -80,6 +85,7 @@ void request(int nr) {
     timespec_get(&start, TIME_UTC);
     
     //Nur 1 Thread zeitgleich kann die Zustände überprüfen
+    //Nach der Überprüfung
     //Mutex sperren
     pthread_mutex_lock(&lock); 
     //Berechnen der Wartezeit bis der krit Bereich betreten werden darf.
@@ -89,7 +95,8 @@ void request(int nr) {
 
      printf("Nr %d requested Spoon \n", nr);    
      //Überprüfung der Zustände, rechts und links
-        //Fairness durch FIFO
+        //Fairness durch FIFO und zufällige Wartezeit
+        //Keine Warteschlange, wäre unfair, da durch Zufällige Wartezeit andere blockiert werden würden
     if( nr == 0 && requested[1] != true && requested[3] != true){ eat(nr);}
     else if( nr == 1 && requested[2] != true && requested[0] != true){ eat(nr);}
     else if( nr == 2 && requested[3] != true && requested[1] != true){ eat(nr);}
@@ -101,7 +108,6 @@ void request(int nr) {
      
      //Mutex entsperren
      pthread_mutex_unlock(&lock);
-    
      
 
        
@@ -124,7 +130,7 @@ void *task (void* args) {
     sleep(TIME_TO_EAT); 
     finish(*nr);
     zaehler[*nr] += 1;
-     w [*nr] += d_delta[*nr] + d_delta[*nr +4];
+     w [*nr] += d_delta[*nr] + d_delta[*nr +4];  //Addieren der Wartezeiten mit den Zeiten der vorrausgegeangenen Durchläufe
     printf("Wartezeit von Nr %d is %f \n", *nr, w[*nr]);
     printf("Nr %d hat schon %d -mal beide Löffel erhalten \n", *nr, zaehler[*nr]); 
  

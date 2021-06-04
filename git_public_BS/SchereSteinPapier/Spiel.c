@@ -16,6 +16,8 @@ int anzGewonnen2 = 0;
 int zug1 = -1;
 int zug2 = -1;
 sem_t sem;
+//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_cond_t start = PTHREAD_COND_INITIALIZER;
 
 double randInRange(int min, int max)
 {
@@ -28,6 +30,9 @@ int *id  = ( int *) args;
 
 
  while(anzSpiele <= 50){ 
+
+////lock()
+//pthread_cond_wait(&start, &mutex);
   
  sem_wait(&sem);
   
