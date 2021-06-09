@@ -1,3 +1,5 @@
+//Imports
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -6,28 +8,34 @@
 #include <time.h>
 #include <unistd.h>
 
-//Anzahl Philosopher
+//Initialisiere Anzahl Philosopher bzw. Threads
 #define ANZ_PHILOSOPHER (4)
-// Zeit, die ein Philosopher zum Essen braucht
+
+// Definiere Zeit, die ein Philosopher zum Essen braucht
 #define TIME_TO_EAT 10
 
 // Mutexvariablen
 pthread_mutex_t lock, safe[4];
-//Philosophen ID
-int neighbours [4] = { 0, 1, 2 , 3};    
-// Zustand true wenn Philosoph isst, false wenn er keinen Löffel benötigt
+
+//Philosophennummer 
+int neighbours [4] = { 0, 1, 2 , 3}; 
+   
+// Zustand => true wenn Philosoph isst, false wenn er keinen Löffel benötigt
 bool requested[4];
-//Wartezeit
+
+//Wartezeit für jeden Thread
 double d_delta[7];
 double w [4];
-//Löffelzähler
+
+//Löffelzähler -> Initial 0
 size_t zaehler [4] = {0, 0, 0, 0};
-// für Zufallszahlberechnung  
+
+// Zeitstempel für Zufallszahlberechnung  
 time_t t;
 size_t z = 1;
 
-//essen
-//Keine Deadlockgefahr, da Ressourcen nach endlicher Zeit freigegeben werden und Mutex kann nur von einem Thread betreten werden
+//Methode Essen, Reserviert Ressourcen, berechnet einen Teil der Wartezeit (Zeit bis Ressource reserviert ist)
+//Keine Deadlockgefahr, da Ressourcen nach endlicher (vorbestimmter) Zeit freigegeben werden und Mutex kann nur von einem Thread betreten werden
 void eat (int nr){
 
     
@@ -35,13 +43,16 @@ void eat (int nr){
     struct timespec start, stop, delta;
     
     timespec_get(&start, TIME_UTC);
+
     //Mutex (für den Zustand des jeweiligen Philosophen) sperren
     pthread_mutex_lock(&safe[nr]); 
-
+	
+    //Zeitdifferenz
     timespec_get(&stop, TIME_UTC);
     delta.tv_sec = stop.tv_sec - start.tv_sec;
     delta.tv_nsec = stop.tv_nsec - start.tv_nsec;
-
+    
+    //Zustand auf true -> philosph isst.
     requested[nr] = true; 
    
      
@@ -50,6 +61,8 @@ void eat (int nr){
       
     //Mutex freigeben
     pthread_mutex_unlock(&safe[nr]); 
+
+    //Umrechnung in Sekunden
     d_delta[nr] = (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
 
 }
@@ -125,8 +138,11 @@ void *task (void* args) {
     printf("Nr %d is thinking\n", *nr);
     think();
     printf("Nr %d finished thinking\n", *nr);
-
+	
+    //Ressourcen anfragen bzw. prüfen
     request(*nr);
+
+    // Esse eine bestimmte Zeit lang
     sleep(TIME_TO_EAT); 
     finish(*nr);
     zaehler[*nr] += 1;
@@ -147,13 +163,13 @@ int main (){
 pthread_t t[ANZ_PHILOSOPHER]; 
 
 
-
-        if (pthread_mutex_init(&lock, NULL)!=0){ 
+      //Initialisiere Mutex
+      if (pthread_mutex_init(&lock, NULL)!=0){ 
         printf("\n Mutex Initialization Failed \n");
       }
     
 
-
+     //Initialisiere Mutex der Philosophen bzw. Ressourcen
      for( int counter = 0; counter < ANZ_PHILOSOPHER; counter++){
         
         if (pthread_mutex_init(&safe[counter], NULL)!=0){ 
@@ -170,7 +186,7 @@ pthread_t t[ANZ_PHILOSOPHER];
 
     }
     
-
+    //Zerstören der Mutexen
     for( int counter = 0; counter < ANZ_PHILOSOPHER; counter++){
         pthread_mutex_destroy(&safe[counter]);
     }
