@@ -75,7 +75,17 @@ void consumer (){
 int main ( int argc, char ** argv){
 
     int opt;
-    while(( opt = getopt(argc, argv, "pc")) != -1){
+    pid_t pid;
+
+    pid = fork();
+    if(pid == 0){
+        consumer();
+    }else if( pid >0){
+        producer();
+    } else{
+        printf("Fehler bei Prozesserzeugung");
+    }
+    /*while(( opt = getopt(argc, argv, "pc")) != -1){
         switch(opt){
             case 'p':
                 producer();
@@ -84,7 +94,7 @@ int main ( int argc, char ** argv){
             consumer();
             return 0;
         }
-    }
+    }*/
     printf("Folgende Optionen sind verfügber:" "\n\t-p: Starte ");
     return 0;
 
