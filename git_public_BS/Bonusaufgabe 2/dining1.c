@@ -54,7 +54,7 @@ void eat (int nr){
         delta.tv_nsec += 10000000000;
     }
     //Umrechnung in Sekunden
-    d_delta[nrZ] += (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
+    d_delta[nr] += (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
 
     requested[nr] = true; 
    
@@ -133,8 +133,7 @@ void request(int nr) {
      //Mutex entsperren
      pthread_mutex_unlock(&lock);
      
-     //Wartezeit ausgeben
-     printf("Wartezeit von Thread %d ist %f\n", nr,(double)d_delta[nr].tv_sec);
+    
        
 
     
@@ -158,12 +157,15 @@ void *task (void* args) {
     sleep(TIME_TO_EAT); 
     finish(*nr);
     zaehler[*nr] += 1;
-   
+     //Wartezeit ausgeben
+     printf("Wartezeit von Thread %d ist %f\n", *nr,(double)d_delta[*nr]);
+    
+    //Anzahl erhaltener Ressourcen ausgeben
     printf("Nr %d hat schon %d -mal beide Löffel erhalten \n", *nr, zaehler[*nr]); 
  
 
  
- }while(1);
+ }while(1);  //Programm in Endlosschleife laufen lassen
  
     
     return NULL;
