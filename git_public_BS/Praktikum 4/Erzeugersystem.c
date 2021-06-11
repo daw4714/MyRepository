@@ -23,6 +23,20 @@ struct payload * inhalt_anschluss = inhalt +1;    //+1 Erhöht Adresse um Größ
 int verbrauchen(){
     payload -> work = (payload -> work)*(payload->work);
 }
+
+void doFork ()
+{
+    pid_t p;
+    p = fork();
+    if( pid == 0){
+        //Kind Prozess
+    } else if ( p > 0){
+        //Eltern Prozess
+    }
+    else{
+    printf("Fehler\n");    
+    }
+    
     
 int main(){
     sem_init(sync->newWork, 1,1);
