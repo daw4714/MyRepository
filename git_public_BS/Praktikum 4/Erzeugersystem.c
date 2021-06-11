@@ -30,8 +30,11 @@ void doFork ()
     p = fork();
     if( pid == 0){
         //Kind Prozess
+        sleep(1);
+        consumer();
     } else if ( p > 0){
         //Eltern Prozess
+        producer();
     }
     else{
     printf("Fehler\n");    
