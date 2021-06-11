@@ -24,7 +24,7 @@ int neighbours [4] = { 0, 1, 2 , 3};
 bool requested[4];
 
 //Wartezeit für jeden Thread
-double d_delta[7];
+struct timespec d_delta[4];
 double w [4];
 
 //Löffelzähler -> Initial 0
@@ -40,26 +40,9 @@ void eat (int nr){
 
     
     //WarteZeitberechnung
-    struct timespec start, stop, delta;
+    //struct timespec start, stop, delta;
     
-    timespec_get(&start, TIME_UTC);
-
-    //Mutex (für den Zustand des jeweiligen Philosophen) sperren
-    pthread_mutex_lock(&safe[nr]); 
-	
-    //Zeitdifferenz
-    timespec_get(&stop, TIME_UTC);
-    delta.tv_sec = stop.tv_sec - start.tv_sec;
-    delta.tv_nsec = stop.tv_nsec - start.tv_nsec;
-    if(stop.tv_nsec - start.tv_nsec){
-        delta.tv_sec ++;
-        delta.tv_nsec += 10000000000;
-    }
-    //Umrechnung in Sekunden
-    d_delta[nr] += (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
-    
-    
-    //Zustand auf true -> philosph isst.
+  
     requested[nr] = true; 
    
      
@@ -69,7 +52,7 @@ void eat (int nr){
     //Mutex freigeben
     pthread_mutex_unlock(&safe[nr]); 
 
-    
+   
 
 }
 
@@ -100,24 +83,24 @@ void think(){
 }
 
 void request(int nr) {
-    struct timespec start, stop, delta;
+    struct timespec start, stop;
     timespec_get(&start, TIME_UTC);
     
     //Nur 1 Thread zeitgleich kann die Zustände überprüfen
     //Nach der Überprüfung
     //Mutex sperren
     pthread_mutex_lock(&lock); 
+
     //Berechnen der Wartezeit bis der krit Bereich betreten werden darf.
     timespec_get(&stop, TIME_UTC);
-    delta.tv_sec = stop.tv_sec - start.tv_sec;
-    delta.tv_nsec = stop.tv_nsec - start.tv_nsec;
-    if(stop.tv_nsec - start.tv_nsec){
-        delta.tv_sec ++;
-        delta.tv_nsec += 10000000000;
-    }
-    //Umrechnung in Sekunden
-    d_delta[nr +4] += (double) delta.tv_sec + (double) delta.tv_nsec/ 1000000000.0;
-    
+    d_delta[nr].tv_sec += stop.tv_sec - start.tv_sec;
+    d_delta[nr].tv_nsec += stop.tv_nsec - start.tv_nsec;
+    if(stop.tv_nsec < start.tv_nsec){
+            d_delta[nr].tv_sec ++;
+            d_delta[nr].tv_sec += 10000000000;
+       
+      }
+   
 
      printf("Nr %d requested Spoon \n", nr);    
      //Überprüfung der Zustände, rechts und links
@@ -130,12 +113,14 @@ void request(int nr) {
     else { printf(" requested Ressources in use\n");}
     if( (requested[0] && requested[2]) || (requested[1] && requested[3]) ) { printf("opposide Philosophers are eating at same time\n");}
      
+     
       
      
      //Mutex entsperren
      pthread_mutex_unlock(&lock);
      
-
+     //Wartezeit ausgeben
+     printf("Wartezeit von Thread %d ist %f\n", nr,(double)d_delta[nr].tv_sec);
        
 
     
@@ -159,8 +144,7 @@ void *task (void* args) {
     sleep(TIME_TO_EAT); 
     finish(*nr);
     zaehler[*nr] += 1;
-     w [*nr] = d_delta[*nr] + d_delta[*nr +4];  //Addieren der Wartezeiten mit den Zeiten der vorrausgegeangenen Durchläufe
-    printf("Wartezeit von Nr %d is %f \n", *nr, w[*nr]);
+   
     printf("Nr %d hat schon %d -mal beide Löffel erhalten \n", *nr, zaehler[*nr]); 
  
 
@@ -208,19 +192,3 @@ pthread_t t[ANZ_PHILOSOPHER];
     return 0;
 
 }
-
-    © 2021 GitHub, Inc.
-    Terms
-    Privacy
-    Security
-    Status
-    Docs
-
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-
